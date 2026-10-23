@@ -1666,7 +1666,7 @@
 
   // ---------- 하단 탭 (휴대폰 화면에서만 한 번에 한 화면) ----------
   const VIEW_KEY = "soccer-attendance-view";
-  const VIEWS = ["check", "lineup", "summary", "stats", "members"];
+  const VIEWS = ["check", "lineup", "summary", "stats", "members", "chat"];
   function setView(v, keepScroll) {
     if (!VIEWS.includes(v)) v = "check";
     document.body.dataset.view = v;

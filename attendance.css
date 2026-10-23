@@ -596,7 +596,7 @@ html { -webkit-text-size-adjust: 100%; }
   /* 하단 탭 */
   .tabbar {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     position: fixed;
     left: 0; right: 0; bottom: 0;
     z-index: 20;
@@ -1280,3 +1280,20 @@ body.locked #memberPanel > .hint { display: none; }
 .row-btn.danger.confirm,
 .row-btn.danger.confirm:hover { background: #c62828; border-color: #c62828; color: #ffffff; font-weight: 700; }
 body.locked #memberPanel .team-admin { display: none; }
+
+/* ---- 전술 챗봇 ---- */
+.chat-status { font-size: .8rem; }
+.chat-status[data-ok="1"] { color: var(--pitch); }
+.chat-status[data-ok="0"] { color: var(--warn); }
+.chat-log { display: flex; flex-direction: column; gap: 8px; max-height: 52vh; min-height: 160px; overflow-y: auto; padding: 4px 2px 8px; }
+.msg { max-width: 88%; padding: 8px 12px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--line); font-size: .92rem; line-height: 1.5; }
+.msg p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.msg.me { align-self: flex-end; background: var(--pitch); border-color: var(--pitch); color: #fff; }
+.msg details { margin-top: 6px; font-size: .8rem; color: var(--muted); }
+.msg summary { cursor: pointer; }
+.msg pre { margin: 4px 0 0; max-height: 220px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-family: inherit; }
+.chat-sugg { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+.chat-form { display: flex; gap: 8px; margin-top: 6px; }
+.chat-form input { flex: 1; min-width: 0; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--fg); font: inherit; }
+@media (max-width: 860px) { .chat-log { max-height: calc(100vh - 340px); } }
+@media (max-width: 380px) { .tabbar button { font-size: .62rem; } }

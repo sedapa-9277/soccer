@@ -104,7 +104,7 @@ def answer_tactics(llm, store, question):
     context = "\n\n".join(f"({i + 1}) {d.page_content}" for i, (d, _) in enumerate(hits))
     reply = llm.invoke(TACTIC_PROMPT.format(context=context, question=question)).content
     refs = ", ".join(f"{d.metadata['source']}({s:.2f})" for d, s in hits)
-    return f"{reply}\n\n[근거 청크 {len(hits)}개 · 코사인 유사도] {refs}"
+    return reply, f"근거 청크 {len(hits)}개 · 코사인 유사도: {refs}"
 
 
 # ───────────────────────── 출석 통계 ─────────────────────────
@@ -130,6 +130,9 @@ def _get(table, select="*", extra=""):
 
 class Stats:
     def __init__(self):
+        self.refresh()
+
+    def refresh(self):
         self.members = {m["id"]: m for m in _get("members")}
         self.att = _get("attendance", "day,member_id,game")
         self.team_names = {t["team"]: t["name"] for t in _get("team_names") if t.get("active", True)}
@@ -214,11 +217,12 @@ def is_stats(question, stats):
 def answer_stats(llm, stats, question):
     data = stats.summarize(question)
     reply = llm.invoke(STATS_PROMPT.format(data=data, question=question)).content
-    return f"{reply}\n\n[집계 결과 — DB 원본 기준]\n{data}"
+    return reply, data
 
 
 # ───────────────────────── 실행 ─────────────────────────
-def main():
+def make_bot():
+    """질문 문자열 → {"mode", "answer", "detail"} 를 돌려주는 함수와 준비 정보를 만든다."""
     print("전술 문서 인덱싱 중...", flush=True)
     store, n = build_store()
     llm = ChatOllama(model=LLM_MODEL, temperature=0.1, num_ctx=4096)
@@ -227,22 +231,38 @@ def main():
         stats = Stats()
     except requests.RequestException as e:
         print(f"(출석 DB 연결 실패 — 통계 질문은 건너뜁니다: {e})")
-    print(f"준비 완료: 청크 {n}개, 모델 {LLM_MODEL}, 임베딩 {EMBED_MODEL}, 상위 {TOP_K}개 검색")
+    print(f"준비 완료: 청크 {n}개, 모델 {LLM_MODEL}, 임베딩 {EMBED_MODEL}, 상위 {TOP_K}개 검색", flush=True)
 
     def ask(q):
         if stats is not None and is_stats(q, stats):
-            return answer_stats(llm, stats, q)
-        return answer_tactics(llm, store, q)
+            try:
+                stats.refresh()  # 출석은 계속 바뀌므로 질문마다 최신 데이터를 받는다
+            except requests.RequestException:
+                pass
+            reply, data = answer_stats(llm, stats, q)
+            return {"mode": "stats", "answer": reply, "detail": data}
+        reply, refs = answer_tactics(llm, store, q)
+        return {"mode": "tactics", "answer": reply, "detail": refs}
 
+    return ask
+
+
+def main():
+    ask = make_bot()
+
+    def show(q):
+        r = ask(q)
+        label = "집계 결과 — DB 원본 기준" if r["mode"] == "stats" else "근거"
+        print(f"{r['answer']}\n\n[{label}]\n{r['detail']}")
     if len(sys.argv) > 1:
-        print(ask(" ".join(sys.argv[1:])))
+        show(" ".join(sys.argv[1:]))
         return
     print("질문을 입력하세요 (종료: 빈 줄 또는 q)")
     while True:
         q = input("\n> ").strip()
         if not q or q.lower() == "q":
             break
-        print(ask(q))
+        show(q)
 
 
 if __name__ == "__main__":

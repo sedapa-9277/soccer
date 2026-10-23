@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap">
-  <link rel="stylesheet" href="attendance.css?v=42">
+  <link rel="stylesheet" href="attendance.css?v=43">
 </head>
 <body class="locked" data-view="check">
 <div class="wrap">
@@ -169,6 +169,23 @@
     </div>
     <p class="hint muted">참석률 = 참석한 모임 날짜 수 ÷ 기간 중 팀의 전체 모임 날짜 수 (그날 한 경기라도 나오면 참석으로 셉니다)</p>
   </section>
+  <section class="panel view" data-view="chat" aria-labelledby="chatTitle">
+    <div class="panel-head">
+      <h2 id="chatTitle">전술 챗봇</h2>
+      <span class="chat-status muted" id="chatStatus" aria-live="polite">서버 확인 중…</span>
+    </div>
+    <div class="chat-log" id="chatLog" aria-live="polite"></div>
+    <div class="chat-sugg" id="chatSugg">
+      <button type="button" class="chip">4-3-3 포메이션의 장단점은?</button>
+      <button type="button" class="chip">게겐프레싱이 뭐야?</button>
+      <button type="button" class="chip">이번 달 출석 많은 순서로 보여줘</button>
+    </div>
+    <form class="chat-form" id="chatForm" autocomplete="off">
+      <input type="text" id="chatInput" maxlength="300" placeholder="전술이나 출석 통계를 물어보세요" aria-label="질문 입력">
+      <button type="submit" class="btn" id="chatSend">보내기</button>
+    </form>
+    <p class="hint muted">전술 답변은 등록된 전술 문서에서 유사도 상위 5개를 근거로 합니다. 챗봇 서버가 켜져 있어야 합니다 (<code>chatbot/start_chatbot.bat</code>).</p>
+  </section>
 </div>
 
 <nav class="tabbar" id="tabbar" aria-label="화면 전환">
@@ -191,6 +208,10 @@
   <button type="button" data-tab="members">
     <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.8-3.2 3-5 5.5-5s4.7 1.8 5.5 5"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.3c2.3.2 4 1.8 4.7 4.7"/></svg>
     <span>회원</span>
+  </button>
+  <button type="button" data-tab="chat">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h8M8 13h5"/></svg>
+    <span>챗봇</span>
   </button>
 </nav>
 
@@ -231,7 +252,8 @@
 <div class="toast" id="toast" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<script src="attendance.js?v=42"></script>
+<script src="attendance.js?v=43"></script>
+<script src="chat.js?v=43"></script>
 <script>
   // PWA·앱 설치용 서비스 워커 등록
   if ('serviceWorker' in navigator) {
