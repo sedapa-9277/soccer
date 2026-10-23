@@ -1,14 +1,14 @@
 // 출석부 (내 폰) 서비스 워커 — local/ 폴더 전용. 앱 화면 파일을 캐시해 두고 캐시에서 먼저 연다(오프라인 동작).
 // local.css·local.js의 ?v=N을 올리면 아래 SHELL과 VERSION도 함께 올린다.
-const VERSION = 11;
+const VERSION = 12;
 const PREFIX = 'soccer-local-shell-';
 const CACHE = PREFIX + VERSION;
 const FONT_CACHE = 'soccer-local-fonts';
 const XLSX_URL = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
 const SHELL = [
   './',
-  'local.css?v=8',
-  'local.js?v=9',
+  'local.css?v=9',
+  'local.js?v=10',
   'manifest.webmanifest',
   'icon-192.png',
   'icon-512.png',

@@ -1,5 +1,5 @@
 // 출석부 서비스 워커 — 앱 화면 파일만 캐시하고, 데이터(Supabase)는 항상 네트워크로 받는다.
-const CACHE = 'attendance-shell-v43';
+const CACHE = 'attendance-shell-v44';
 const SHELL = [
   './',
   'index.html',

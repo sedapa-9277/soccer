@@ -513,6 +513,13 @@
     return { formation, slots };
   }
 
+  // 그 경기에서 이 회원이 서 있는 포지션 이름(없으면 null) — 출석 동그라미에 보여 준다
+  function posOf(date, g, mid) {
+    const lu = lineupOf(date, g);
+    const i = lu.slots.indexOf(mid);
+    return i < 0 ? null : FORMATIONS[lu.formation][i][0];
+  }
+
   function placeMember(slotIdx, mid) {
     const date = S.date, g = S.lineupGame, t = S.team;
     const lu = lineupOf(date, g);
@@ -1523,9 +1530,10 @@
         const b = document.createElement("button");
         const on = attended(S.date, id, g);
         b.className = "cell";
-        b.textContent = on ? "참" : g;
+        const pos = on ? posOf(S.date, g, id) : null;
+        b.textContent = on ? pos || "참석" : g;
         b.setAttribute("aria-pressed", on);
-        b.setAttribute("aria-label", `${m.name} ${g}경기 ${on ? "참석" : "미참석"}`);
+        b.setAttribute("aria-label", `${m.name} ${g}경기 ${on ? "참석" + (pos ? " " + pos : "") : "미참석"}`);
         b.addEventListener("click", () => toggleCell(id, g));
         td.append(b);
         tr.append(td);
